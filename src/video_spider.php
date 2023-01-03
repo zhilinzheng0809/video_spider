@@ -38,6 +38,7 @@ class Video {
         // $arr = json_decode($this->curl('https://www.iesdouyin.com/web/api/v2/aweme/iteminfo/?item_ids=' . $id[1]), true);
         $num = preg_replace('/[^0-9]/', '', $id[1]);
         $arr = json_decode($this->curl('https://www.iesdouyin.com/aweme/v1/web/aweme/detail/?aweme_id=' .$num), true);
+        // return $arr;
         if ($arr['status_code']==0) {
             $arr = ['code' => 200, 
             'msg' => '解析成功', 
@@ -202,9 +203,9 @@ class Video {
     }
 
     public function kuaishou($url) {
-        $locs = get_headers($url, true) ['Location'][1];
+        $locs = get_headers($url, true) ['Location'];
         preg_match('/photoId=(.*?)\&/', $locs, $matches);
-        $headers = array('Cookie: did=web_9bceee20fa5d4a968535a27e538bf51b; didv=1655992503000;',
+        $headers = array('Cookie: did=web_b2a7ddcd01b44d809a94e3fe09637c40; didv=1672284286000;',
         'Referer: ' . $locs, 'Content-Type: application/json');
         $post_data = '{"photoId": "' . str_replace(['video/', '?'], '', $matches[1]) . '","isLongVideo": false}';
         $curl = curl_init();
