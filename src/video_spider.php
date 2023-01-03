@@ -33,7 +33,12 @@ class Video {
     
     public function douyin($url) {
         $loc = get_headers($url, true) ['Location'];
+        //判断是否是数组，取其中一个
+        if (is_array($loc)) {
+            $loc = $loc[0];
+        }
         preg_match('/video\/(.*)\?/', $loc, $id);
+        
         // 接口已于失效
         // $arr = json_decode($this->curl('https://www.iesdouyin.com/web/api/v2/aweme/iteminfo/?item_ids=' . $id[1]), true);
         $num = preg_replace('/[^0-9]/', '', $id[1]);
@@ -204,6 +209,9 @@ class Video {
 
     public function kuaishou($url) {
         $locs = get_headers($url, true) ['Location'];
+        if (is_array($locs)) {
+            $locs = $locs[0];
+        }
         preg_match('/photoId=(.*?)\&/', $locs, $matches);
         $headers = array('Cookie: did=web_b2a7ddcd01b44d809a94e3fe09637c40; didv=1672284286000;',
         'Referer: ' . $locs, 'Content-Type: application/json');
