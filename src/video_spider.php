@@ -448,16 +448,21 @@ class Video {
     public function xigua($url) {
         if (strpos($url, 'v.ixigua.com') != false) {
             $loc = get_headers($url, true) ['Location'];
+            if (is_array($loc)) {
+                $loc = $loc[0];
+            }
             preg_match('/video\/(.*)\//', $loc, $id);
             $url = 'https://www.ixigua.com/' . $id[1];
         }
         $headers = ["User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36 ", "cookie:MONITOR_WEB_ID=7892c49b-296e-4499-8704-e47c1b150c18; ixigua-a-s=1; ttcid=af99669b6304453480454f150701d5c226; BD_REF=1; __ac_nonce=060d88ff000a75e8d17eb; __ac_signature=_02B4Z6wo00f01kX9ZpgAAIDAKIBBQUIPYT5F2WIAAPG2ad; ttwid=1%7CcIsVF_3vqSIk4XErhPB0H2VaTxT0tdsTMRbMjrJOPN8%7C1624806049%7C08ce7dd6f7d20506a41ba0a331ef96a6505d96731e6ad9f6c8c709f53f227ab1"];
         $text = $this->curl($url, $headers);
-        preg_match('/<script id=\"SSR_HYDRATED_DATA\">window._SSR_HYDRATED_DATA=(.*?)<\/script>/', $text, $jsondata);
+        // return $text;
+        // preg_match('/<script id=\"SSR_HYDRATED_DATA\ nonce=[\s\S]*">window._SSR_HYDRATED_DATA=(.*?)<\/script>/', $text, $jsondata);
+        preg_match('/window._SSR_HYDRATED_DATA=(.*?)<\/script>/', $text, $jsondata);
         $data = json_decode(str_replace('undefined', 'null', $jsondata[1]), 1);
         $result = $data["anyVideo"]["gidInformation"]["packerData"]["video"];
-        $video_url = base64_decode($result["videoResource"]["dash"]["dynamic_video"]["dynamic_video_list"][2]["main_url"]);
-        $music_url = base64_decode($result["videoResource"]["dash"]["dynamic_video"]["dynamic_audio_list"][0]["main_url"]);
+        $video_url = base64_decode($result["videoResource"]["normal"]["video_list"]["video_3"]["main_url"]);
+        // $music_url = base64_decode($result["videoResource"]["normal"]["dynamic_video"]["dynamic_audio_list"][0]["main_url"]);
         $video_author = $result['user_info']['name'];
         $video_avatar = str_replace('300x300.image', '300x300.jpg', $result['user_info']['avatar_url']);
         $video_cover = $data["anyVideo"]["gidInformation"]["packerData"]["video"]["poster_url"];
@@ -474,9 +479,9 @@ class Video {
                     'title' => $video_title, 
                     'cover' => $video_cover, 
                     'url' => $video_url, 
-                    'music' => [
-                        'url' => $music_url
-                        ]
+                    // 'music' => [
+                    //     'url' => $music_url
+                    //     ]
                     ]
                 ];
             return $arr;
