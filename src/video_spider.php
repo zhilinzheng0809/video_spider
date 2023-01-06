@@ -37,6 +37,10 @@ class Video {
         if (is_array($loc)) {
             $loc = $loc[0];
         }
+        //解决iesdouyin的解析问题
+        if ($loc == null && strpos($url, 'iesdouyin')) {
+            $loc = $url;
+        }
         preg_match('/video\/(.*)\?/', $loc, $id);
         
         // 接口已于失效
