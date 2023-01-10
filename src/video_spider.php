@@ -47,7 +47,6 @@ class Video {
         // $arr = json_decode($this->curl('https://www.iesdouyin.com/web/api/v2/aweme/iteminfo/?item_ids=' . $id[1]), true);
         $num = preg_replace('/[^0-9]/', '', $id[1]);
         $arr = json_decode($this->curl('https://www.iesdouyin.com/aweme/v1/web/aweme/detail/?aweme_id=' .$num), true);
-        // return $arr;
         if ($arr['status_code']==0) {
             $arr = ['code' => 200, 
             'msg' => '解析成功', 
@@ -124,17 +123,21 @@ class Video {
             $arr = json_decode($this->weibo_curl($id[0]), true);
         }
         if ($arr) {
-            $one = key($arr['data']['Component_Play_Playinfo']['urls']);
-            $video_url = $arr['data']['Component_Play_Playinfo']['urls'][$one];
+            $playInfo = $arr['data']['Component_Play_Playinfo'];
+            if ($playInfo == null) {
+                return null;
+            }
+            $one = key($playInfo['urls']);
+            $video_url = $playInfo['urls'][$one];
             $arr = [
                 'code' => 200, 
                 'msg' => '解析成功', 
                 'data' => [
-                    'author' => $arr['data']['Component_Play_Playinfo']['author'], 
-                    'avatar' => $arr['data']['Component_Play_Playinfo']['avatar'], 
-                    'time' => $arr['data']['Component_Play_Playinfo']['real_date'], 
-                    'title' => $arr['data']['Component_Play_Playinfo']['title'], 
-                    'cover' => $arr['data']['Component_Play_Playinfo']['cover_image'], 
+                    'author' => $playInfo['author'], 
+                    'avatar' => $playInfo['avatar'], 
+                    'time' => $playInfo['real_date'], 
+                    'title' => $playInfo['title'], 
+                    'cover' => $playInfo['cover_image'], 
                     'url' => $video_url
                     ]
                 ];
