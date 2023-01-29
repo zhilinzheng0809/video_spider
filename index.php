@@ -71,6 +71,8 @@ if (strpos($url,'pipix')){
     $arr = $api->acfan($url);
 } elseif(strpos($url,'meipai.com')){
     $arr = $api->meipai($url);
+} elseif(strpos($url, 'xhslink.com')) {
+    $arr = $api->xiaohongshu($url);
 } else {
     $arr = array(
         'code'  => 201,
