@@ -115,7 +115,7 @@ class Video {
     }
 
     public function weishi($url) {
-        preg_match('/feed\/(.*)\b/', $url, $id);
+        preg_match('/feed\/(.*)\//', $url, $id);
         if (strpos($url, 'h5.weishi') != false) {
             $arr = json_decode($this->curl('https://h5.weishi.qq.com/webapp/json/weishi/WSH5GetPlayPage?feedid=' . $id[1]), true);
         } else {
