@@ -97,17 +97,18 @@ class Video {
     }
 
     public function huoshan($url) {
-        $loc = get_headers($url, true) ['location'];
+        $loc = get_headers($url, true) ['Location'];
         preg_match('/item_id=(.*)&tag/', $loc, $id);
         $arr = json_decode($this->curl('https://share.huoshan.com/api/item/info?item_id=' . $id[1]), true);
         $url = $arr['data']['item_info']['url'];
         preg_match('/video_id=(.*)&line/', $url, $id);
-        if ($id) {
+        if ($url) {
             $arr = [
                 'code' => 200, 
                 'msg' => '解析成功', 
                 'data' => ['cover' => $arr["data"]["item_info"]["cover"], 
-                'url' => 'https://api-hl.huoshan.com/hotsoon/item/video/_playback/?video_id=' . $id[1]
+                'url' => $url,
+                'title' => ''
                 ]
             ];
             return $arr;
