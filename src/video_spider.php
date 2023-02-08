@@ -32,6 +32,10 @@ class Video {
     }
     public function xiaohongshu($url) {
         $loc = get_headers($url, true) ['Location'];
+        //判断是否是数组，取其中一个
+        if (is_array($loc)) {
+            $loc = $loc[0];
+        }
         $loc = str_replace('discovery/item', 'explore', $loc);
         $headers = ["User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36","Cookie: timestamp2=1672721658905900851ebee52f59f3736c908b7bcf277b91ec53396967cf5a0; timestamp2.sig=NCo87b_MF5fWXqNIKuryQUEOyXq3niDmkKS1UYKIOfI; gid.ss=gSMQ9UOnDuZwH2oRGJG6BW6e4grs67TaYpnrW+8Wmd2K1m9D5rbOMEAoPpkQ2b08; a1=1859eb9419divzwc5b6zac3xdfu81xy9nmogxe3ah00000107070; webId=0e5129aad7afea1ffd51916084ea7e5c; gid=yY2jdDj420I4yY2jdDj4y6dqjf3huES2DKu0l0xSqCfi7k88YyCvjC888y8W8W88KfYY8JjK; gid.sign=s68HoICDrVobhsOmXRY4a/53vFc=; web_session=030037a48d7750f02b986865c6244a4cb843ba; xhsTrackerId=7a461986-cbab-4b83-afa8-12893b82e032; xhsTrackerId.sig=Xch35vkaagynbCnNnhrlaFSO_c0WHiBjRT3CR3brGi8; xsecappid=xhs-pc-web; extra_exp_ids=h5_1208_exp3,h5_1130_exp1,ios_wx_launch_open_app_exp,h5_video_ui_exp3,wx_launch_open_app_duration_origin,ques_exp2; extra_exp_ids.sig=Iw6nBv0KxUOEEtlo5ci79RYBK7O-I3uwnXYWGdfO0Ec; web_sec_uuid=7fe01ca0-4c98-49dd-8299-b41fdb193cd2; websectiga=9b60c9cf261d5d87f249de3be04fa734f41f8fad8d8e3ea639b8f1617aaeef2a; xhsTracker=url=explore&xhsshare=CopyLink; xhsTracker.sig=wmLdXV__wbETiz1qUgqoiY8swj2zGxC5B-xOV9HIhWg; webBuild=1.0.36"];
         // $headers = ["User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"];
