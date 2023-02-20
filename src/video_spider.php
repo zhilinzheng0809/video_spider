@@ -59,6 +59,19 @@ class Video {
         );
         return $arr;
     }
+
+    public function douyin_curl($url) {
+        $headers = ["User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"];
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_HEADER, 1);
+        curl_setopt($curl, CURLOPT_NOBODY, 0);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLINFO_HEADER_OUT, TRUE);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        return $curl;
+    }
     
     public function douyin($url) {
         $loc = get_headers($url, true) ['Location'];
@@ -75,7 +88,22 @@ class Video {
         // 接口已于失效
         // $arr = json_decode($this->curl('https://www.iesdouyin.com/web/api/v2/aweme/iteminfo/?item_ids=' . $id[1]), true);
         $num = preg_replace('/[^0-9]/', '', $id[1]);
-        $arr = json_decode($this->curl('https://www.iesdouyin.com/aweme/v1/web/aweme/detail/?aweme_id=' .$num), true);
+        $real_url = 'https://www.iesdouyin.com/aweme/v1/web/aweme/detail/?aweme_id=' .$num;
+        // 如果被403的话，则重新尝试请求
+        while (1) {
+            $curl = $this->douyin_curl($real_url);
+            $data = curl_exec($curl);
+            $httpCode = curl_getinfo($curl,CURLINFO_HTTP_CODE);
+            if ($httpCode == 200) {
+                break;
+            } else {
+                curl_close($curl);
+            }
+        }
+        $header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
+        $arr = substr($data, $header_size);
+        $arr = json_decode($arr, true);
+        curl_close($curl);
         if ($arr['status_code']==0) {
             $arr = ['code' => 200, 
             'msg' => '解析成功', 
