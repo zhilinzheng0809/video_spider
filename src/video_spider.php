@@ -89,8 +89,9 @@ class Video {
         // $arr = json_decode($this->curl('https://www.iesdouyin.com/web/api/v2/aweme/iteminfo/?item_ids=' . $id[1]), true);
         $num = preg_replace('/[^0-9]/', '', $id[1]);
         $real_url = 'https://www.iesdouyin.com/aweme/v1/web/aweme/detail/?aweme_id=' .$num;
-        // 如果被403的话，则重新尝试请求
-        while (1) {
+        // 如果被403的话，则重新尝试请求,最多尝试5次
+        $retry_count = 0;
+        while (1 && $retry_count <= 5) {
             $curl = $this->douyin_curl($real_url);
             $data = curl_exec($curl);
             $httpCode = curl_getinfo($curl,CURLINFO_HTTP_CODE);
@@ -99,6 +100,7 @@ class Video {
             } else {
                 curl_close($curl);
             }
+            $retry_count += 1;
         }
         $header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
         $arr = substr($data, $header_size);
